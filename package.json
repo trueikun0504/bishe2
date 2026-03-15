@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start:web": "node admin/server.js",
+    "start:admin": "node admin/server.js",
+    "sync:districts": "node scripts/crawl-china-districts.js",
+    "init:db": "node init-db.js",
+    "seed:test-data": "node seed-test-data.js",
+    "query:users": "node query-users.js",
+    "set:admin": "node set-admin-role.js"
+  },
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.0",
+    "dotenv": "^17.3.1"
+  }
+}

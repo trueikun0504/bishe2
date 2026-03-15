@@ -1,0 +1,67 @@
+<form class="row g-3 mb-4" method="GET" action="/admin/feedback">
+  <div class="col-md-4">
+    <label class="form-label">处理状态</label>
+    <select name="status" class="form-select rounded-4">
+      <% statusOptions.forEach((option) => { %>
+        <option value="<%= option.value %>" <%= currentStatus === option.value ? "selected" : "" %>>
+          <%= option.label %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-dark rounded-4 w-100" type="submit">筛选</button>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th>反馈内容</th>
+        <th>提交用户</th>
+        <th>状态</th>
+        <th>创建时间</th>
+        <th class="text-end">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!feedbacks.length) { %>
+        <tr>
+          <td colspan="5" class="py-5 text-center text-muted">当前没有反馈数据。</td>
+        </tr>
+      <% } %>
+
+      <% feedbacks.forEach((feedback) => { %>
+        <tr>
+          <td>
+            <div class="fw-semibold"><%= feedback.title || "用户反馈" %></div>
+            <div class="small text-muted"><%= String(feedback.content || feedback.description || "").slice(0, 56) %></div>
+          </td>
+          <td><%= feedback.user?.nickname || feedback.openid || feedback.user_id || "-" %></td>
+          <td>
+            <span class="status-pill <%= feedback.status || 'new' %>"><%= feedback.status || "new" %></span>
+          </td>
+          <td><%= new Date(feedback.created_at).toLocaleString("zh-CN") %></td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-dark rounded-4" href="/admin/feedback/<%= feedback.id || feedback._id %>">
+              查看
+            </a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<nav class="mt-4">
+  <ul class="pagination">
+    <% for (let pageNumber = 1; pageNumber <= totalPages; pageNumber += 1) { %>
+      <li class="page-item <%= pageNumber === currentPage ? 'active' : '' %>">
+        <a class="page-link" href="/admin/feedback?status=<%= currentStatus %>&page=<%= pageNumber %>">
+          <%= pageNumber %>
+        </a>
+      </li>
+    <% } %>
+  </ul>
+</nav>

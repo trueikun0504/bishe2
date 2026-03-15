@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://127.0.0.1:3001",
+      "localStorage": [
+        {
+          "name": "LOCAL_TRADER_WEB_TOKEN",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1Mzg1NzliOTY5YjMwM2RjMDA1NWQ3Y2I3Y2M2MzMxMiIsIm9wZW5pZCI6ImJ1eWVyLWNoYXQtMDAxIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NzMzMzk2MTMsImV4cCI6MTc3Mzk0NDQxM30.SmFVsODS8uGVvErd8g5NZ8Ep1cihQWzfBTmK1NguARo"
+        },
+        {
+          "name": "LOCAL_TRADER_WEB_USER",
+          "value": "{\"id\":\"538579b969b303dc0055d7cb7cc63312\",\"account\":\"buyer-chat-001\",\"openid\":\"buyer-chat-001\",\"nickname\":\"用户-at-001\",\"avatar_url\":\"\",\"role\":\"user\",\"status\":\"active\",\"phone_number\":\"\",\"phone_verified\":false,\"created_at\":1773339613467,\"updated_at\":1773339613467}"
+        }
+      ]
+    }
+  ]
+}

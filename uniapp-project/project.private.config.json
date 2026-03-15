@@ -1,0 +1,28 @@
+{
+  "libVersion": "3.14.3",
+  "projectname": "uniapp-project",
+  "condition": {
+    "miniprogram": {
+      "current": 0,
+      "list": [
+        {
+          "id": 0,
+          "name": "首页",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "setting": {
+    "urlCheck": true,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "skylineRenderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "compileHotReLoad": true
+  }
+}

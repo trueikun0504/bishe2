@@ -1,0 +1,137 @@
+/* theme tokens - 参考web端设计 */
+:root {
+  /* 颜色系统 */
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #181818;
+  --muted: #808080;
+  --line: #ece6d9;
+  --yellow: #ffe400;
+  --yellow-deep: #ffd400;
+  --orange: #ff5a1f;
+  --green: #11b76b;
+  --danger: #e5484d;
+
+  /* 兼容原有变量 */
+  --brand-yellow: var(--yellow);
+  --brand-yellow-deep: var(--yellow-deep);
+  --brand-ink: var(--ink);
+  --brand-muted: var(--muted);
+  --brand-line: var(--line);
+  --page-bg: var(--bg);
+  --card-bg: var(--card);
+  --accent-price: var(--orange);
+  --accent-green: var(--green);
+  --chip-bg: #f3efe2;
+  --mask-bg: rgba(15, 15, 15, 0.42);
+
+  /* 阴影 */
+  --shadow: 0 18px 40px rgba(29, 29, 29, 0.08);
+  --shadow-soft: 0 18rpx 40rpx rgba(34, 34, 34, 0.08);
+
+  /* 圆角 */
+  --radius-card: 28rpx;
+  --radius-pill: 999rpx;
+  --radius-sheet: 36rpx;
+
+  /* 文字颜色 */
+  --text-primary: var(--ink);
+  --text-secondary: #666666;
+  --text-tertiary: var(--muted);
+}
+
+/* 字体设置 */
+body, page {
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: calc(28rpx + env(safe-area-inset-top)) 24rpx 172rpx;
+  padding-top: calc(28rpx + constant(safe-area-inset-top));
+  padding-top: calc(28rpx + var(--status-bar-height, 0px));
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  margin-top: 10rpx;
+  color: var(--text-tertiary);
+  font-size: 24rpx;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-soft);
+}
+
+.pill-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
+  padding: 0 32rpx;
+  border-radius: var(--radius-pill);
+  background: var(--brand-yellow);
+  color: var(--brand-ink);
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.ghost-button {
+  background: #fff8ba;
+  color: var(--brand-ink);
+}
+
+.field-label {
+  margin-bottom: 16rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.field-input,
+.field-textarea {
+  width: 100%;
+  padding: 24rpx;
+  box-sizing: border-box;
+  border: 2rpx solid transparent;
+  border-radius: 24rpx;
+  background: #fbfaf7;
+  color: #222222;
+  font-size: 28rpx;
+}
+
+.field-textarea {
+  min-height: 240rpx;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 56rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  background: var(--chip-bg);
+  color: var(--text-secondary);
+  font-size: 22rpx;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 224, 0, 0.24);
+  color: var(--brand-ink);
+  font-size: 22rpx;
+  font-weight: 600;
+}

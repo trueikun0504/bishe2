@@ -1,0 +1,117 @@
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">会话总数</div>
+        <div class="display-6 fw-bold"><%= stats.conversationCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">消息总数</div>
+        <div class="display-6 fw-bold"><%= stats.messageCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">未关闭反馈</div>
+        <div class="display-6 fw-bold"><%= stats.pendingFeedbackCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">今日消息数</div>
+        <div class="display-6 fw-bold"><%= stats.todayMessageCount %></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="rounded-4 border p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">最近聊天会话</h2>
+        <div class="text-muted small">按最近更新时间排序</div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>买家 / 卖家</th>
+              <th>区县</th>
+              <th>最后消息</th>
+              <th>更新时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!recentConversations.length) { %>
+              <tr>
+                <td colspan="5" class="py-5 text-center text-muted">当前没有聊天数据。</td>
+              </tr>
+            <% } %>
+
+            <% recentConversations.forEach((conversation) => { %>
+              <tr>
+                <td>
+                  <div class="fw-semibold"><%= conversation.listing_title %></div>
+                  <span class="type-pill <%= conversation.listing_type %>">
+                    <%= conversation.listing_type === "wanted" ? "求购帖" : "出售帖" %>
+                  </span>
+                </td>
+                <td>
+                  <div>买家: <%= conversation.buyer_name %></div>
+                  <div class="text-muted small">卖家: <%= conversation.seller_name %></div>
+                </td>
+                <td><%= conversation.district_name %></td>
+                <td><%= conversation.last_message || "-" %></td>
+                <td><%= new Date(conversation.updated_at || conversation.created_at).toLocaleString("zh-CN") %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="rounded-4 border p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">待处理反馈</h2>
+        <div class="text-muted small">客服可直接进入处理</div>
+      </div>
+
+      <div class="d-grid gap-3">
+        <% if (!pendingFeedbacks.length) { %>
+          <div class="rounded-4 bg-light p-4 text-center text-muted">当前没有待处理反馈。</div>
+        <% } %>
+
+        <% pendingFeedbacks.forEach((feedback) => { %>
+          <div class="rounded-4 bg-light p-3">
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+              <div class="fw-semibold"><%= feedback.title || "用户反馈" %></div>
+              <span class="status-pill <%= feedback.status || 'new' %>"><%= feedback.status || "new" %></span>
+            </div>
+            <div class="small text-muted mb-2">
+              <%= feedback.user?.nickname || feedback.openid || feedback.user_id || "-" %>
+              ·
+              <%= new Date(feedback.created_at).toLocaleString("zh-CN") %>
+            </div>
+            <div class="small mb-3"><%= String(feedback.content || feedback.description || "").slice(0, 80) %></div>
+            <a class="btn btn-sm btn-dark rounded-4" href="/service/feedback/<%= feedback.id || feedback._id %>">
+              进入处理
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</div>

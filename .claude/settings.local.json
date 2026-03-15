@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/朱鑫/.codex/skills/frontend-backend-connectivity-check/**)",
+      "Bash(py --version)",
+      "Bash(node init-db.js)",
+      "Bash(npm run:*)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3001)",
+      "Bash(echo:*)",
+      "Bash(powershell -Command \"[Environment]::SetEnvironmentVariable\\('HTTP_PROXY', 'http://127.0.0.1:26513', 'User'\\)\" && powershell -Command \"[Environment]::SetEnvironmentVariable\\('HTTPS_PROXY', 'http://127.0.0.1:26513', 'User'\\)\")",
+      "Bash(powershell -Command \"[Environment]::GetEnvironmentVariable\\('HTTP_PROXY', 'User'\\)\")",
+      "Bash(powershell -Command \"[Environment]::GetEnvironmentVariable\\('HTTPS_PROXY', 'User'\\)\")",
+      "Bash(cd:*)"
+    ]
+  }
+}

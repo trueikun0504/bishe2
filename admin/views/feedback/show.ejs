@@ -1,0 +1,38 @@
+<a href="<%= backPath %>" class="btn btn-outline-secondary rounded-4 mb-4">返回上一页</a>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="rounded-4 bg-light p-4 h-100">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <span class="status-pill <%= feedback.status || 'new' %>"><%= feedback.status || "new" %></span>
+        <% if (feedback.type) { %>
+          <span class="type-pill wanted"><%= feedback.type %></span>
+        <% } %>
+      </div>
+      <h2 class="h4 fw-bold mb-3"><%= feedback.title || "用户反馈详情" %></h2>
+      <div class="text-muted mb-3">创建时间: <%= new Date(feedback.created_at).toLocaleString("zh-CN") %></div>
+      <div style="white-space: pre-wrap;"><%= feedback.content || feedback.description || "暂无内容" %></div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="rounded-4 bg-light p-4 mb-4">
+      <div class="fw-semibold mb-3">提交人信息</div>
+      <div class="mb-2">昵称: <%= user?.nickname || "-" %></div>
+      <div class="mb-2">OpenID: <%= user?.openid || user?.open_id || feedback.openid || feedback.user_id || "-" %></div>
+      <div>角色: <%= user?.role || "user" %></div>
+    </div>
+
+    <div class="rounded-4 border p-4">
+      <div class="fw-semibold mb-3">更新处理状态</div>
+      <form method="POST" action="<%= statusAction %>" class="d-grid gap-3">
+        <select name="status" class="form-select rounded-4">
+          <option value="new" <%= (feedback.status || "new") === "new" ? "selected" : "" %>>待处理</option>
+          <option value="processing" <%= feedback.status === "processing" ? "selected" : "" %>>处理中</option>
+          <option value="closed" <%= feedback.status === "closed" ? "selected" : "" %>>已关闭</option>
+        </select>
+        <button type="submit" class="btn btn-dark rounded-4">保存状态</button>
+      </form>
+    </div>
+  </div>
+</div>
