@@ -1,0 +1,66 @@
+%% Overview / 总览
+flowchart TB
+  repo["g:\\bishe2\nMonorepo Root / 仓库根目录"]
+
+  subgraph ROOT_FILES["Root level / 根目录文件"]
+    root_pkg["package.json\nScripts / 脚本"]
+    cloudbase_root["cloudbase.js\nCloudBase init / CloudBase 初始化"]
+    initdb["init-db.js\nBootstrap + normalizeDoc\n初始化 + 文档规范化"]
+    data_seed["data/\nShared seed data / 共享种子数据"]
+    scripts_dir["scripts/\nUtility scripts / 工具脚本"]
+    docs_dir["docs/\nDocs + diagrams / 文档与图表"]
+  end
+
+  subgraph BACKEND["admin/\nBackend service / 后端服务"]
+    admin_server["server.js\nExpress entry / 入口"]
+    admin_routes["routes/\nWeb auth + API + admin + service\nWeb 登录、API、后台、客服"]
+    admin_lib["lib/\nPassword + phone + SMS helpers\n密码、手机号、短信工具"]
+    admin_views["views/\nEJS templates / EJS 模板"]
+    admin_public["public/\nWeb app + uploads\nWeb 用户端 + 上传资源"]
+    admin_ws["websocket.js\nRealtime chat / 实时聊天"]
+  end
+
+  subgraph FRONTEND["uniapp-project/\nFrontend app / 前端应用"]
+    uni_src["src/\nPages + components + services + utils\n页面、组件、服务、工具"]
+    uni_cloudfn["cloudfunctions/\nWeixin auth function\n微信登录云函数"]
+    uni_scripts["scripts/\nCloudfunction sync / 云函数同步"]
+    uni_dist["dist/\nBuild output / 构建产物"]
+  end
+
+  repo --> root_pkg
+  repo --> cloudbase_root
+  repo --> initdb
+  repo --> data_seed
+  repo --> scripts_dir
+  repo --> docs_dir
+  repo --> admin_server
+  repo --> uni_src
+
+  admin_server --> admin_routes
+  admin_server --> admin_lib
+  admin_server --> admin_views
+  admin_server --> admin_public
+  admin_server --> admin_ws
+  admin_server --> cloudbase_root
+  admin_server --> initdb
+
+  admin_routes --> admin_lib
+  admin_routes --> cloudbase_root
+  admin_routes --> initdb
+  admin_routes --> data_seed
+  admin_routes --> admin_ws
+
+  admin_public --> admin_routes
+  admin_public --> admin_server
+
+  uni_src --> uni_cloudfn
+  uni_src --> uni_scripts
+  uni_scripts --> uni_dist
+  uni_scripts --> uni_cloudfn
+
+  root_pkg --> admin_server
+  root_pkg --> uni_src
+  scripts_dir --> data_seed
+  scripts_dir --> docs_dir
+  data_seed --> initdb
+

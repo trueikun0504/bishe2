@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill /PID 35612 /F)",
+      "Bash(powershell -Command \"Stop-Process -Id 35612 -Force\")",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | Select-Object LocalPort,OwningProcess\")",
+      "Bash(powershell -Command \"$pids = Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess; foreach \\($pid in $pids\\) { Stop-Process -Id $pid -Force }\")",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3001 | ForEach-Object { Stop-Process -Id $_OwningProcess -Force }\")",
+      "Bash(curl -s http://localhost:3001/login)",
+      "Bash(findstr :5173)",
+      "Bash(py -3 scripts/check_connectivity.py --frontend-project \"g:\\\\bishe2\\\\uniapp-project\" --method GET --output-format markdown)",
+      "Bash(findstr :3000)",
+      "Bash(node query-users.js)",
+      "Bash(node -c routes/mp-auth.js)",
+      "Bash(findstr LISTENING)",
+      "Bash(curl -X POST http://localhost:3001/api/mp/auth/login -H \"Content-Type: application/json\" -d \"{\"\"code\"\":\"\"test_code\"\"}\" -v)",
+      "Bash(curl -X POST http://localhost:3001/user/login-with-weixin -H \"Content-Type: application/json\" -d \"{\"\"openid\"\":\"\"test_openid\"\"}\" -s)",
+      "Bash(curl -X POST http://localhost:3001/user/login-with-weixin -H 'Content-Type: application/json' -d {openid:test_openid} -s)",
+      "Bash(curl -X POST http://localhost:3001/api/mp/auth/login -H \"Content-Type: application/json\" -d \"{\"\"code\"\":\"\"test_code_001\"\"}\" -v)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/app)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/user-web/styles.css)",
+      "Bash(timeout 5 node admin/server.js)",
+      "Bash(find g:/bishe2 -name .prettierrc* -o -name .eslintrc* -o -name tsconfig.json)",
+      "Bash(powershell \"Stop-Process -Id 35076 -Force\")"
+    ]
+  }
+}

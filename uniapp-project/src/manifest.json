@@ -1,0 +1,30 @@
+{
+  "name": "本地二手 MVP",
+  "appid": "wx21e1115b3dcd95a1",
+  "description": "区县范围内的本地二手交易 MVP 用户端。",
+  "versionName": "0.1.0",
+  "versionCode": "101",
+  "transformPx": false,
+  "mp-weixin": {
+    "appid": "wx21e1115b3dcd95a1",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "minified": true
+    },
+    "usingComponents": true,
+    "permission": {
+      "scope.userLocation": {
+        "desc": "您的位置信息将用于为您推荐附近的商品"
+      }
+    },
+    "requiredPrivateInfos": [
+      "getLocation",
+      "chooseLocation"
+    ]
+  },
+  "uniStatistics": {
+    "enable": false
+  },
+  "vueVersion": "3"
+}

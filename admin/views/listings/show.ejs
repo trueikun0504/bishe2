@@ -1,0 +1,107 @@
+<%
+  const statusLabelMap = {
+    pending_review: "待审核",
+    approved: "已通过",
+    rejected: "已拒绝",
+    off_shelf: "已下架",
+    removed: "已下架",
+  };
+%>
+
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+  <div>
+    <a href="/admin/listings" class="btn btn-outline-secondary rounded-4 mb-3">返回列表</a>
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <span class="type-pill <%= listing.listing_type %>">
+        <%= listing.listing_type === "wanted" ? "求购帖" : "出售帖" %>
+      </span>
+      <span class="status-pill <%= listing.status %>"><%= statusLabelMap[listing.status] || listing.status %></span>
+    </div>
+    <h2 class="h3 fw-bold mb-2"><%= listing.title %></h2>
+    <div class="text-muted">
+      发布于 <%= new Date(listing.created_at).toLocaleString("zh-CN") %>
+      · <%= listing.district_name %>
+    </div>
+  </div>
+  <div class="text-end">
+    <div class="text-muted small">当前价格</div>
+    <div class="display-6 fw-bold text-danger">¥ <%= Number(listing.price || 0).toFixed(2) %></div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="row g-3 mb-4">
+      <% if (images.length) { %>
+        <% images.forEach((image) => { %>
+          <div class="col-md-6">
+            <div class="card border-0 rounded-4 overflow-hidden">
+              <img src="<%= image.image_url %>" alt="listing-image" class="w-100" />
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12">
+          <div class="rounded-4 bg-light p-5 text-center text-muted">暂无独立图片记录，使用主表 image_urls 即可。</div>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="rounded-4 bg-light p-4">
+      <div class="fw-semibold mb-2">商品描述</div>
+      <div class="text-secondary" style="white-space: pre-wrap;"><%= listing.description %></div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="rounded-4 bg-light p-4 mb-4">
+      <div class="fw-semibold mb-3">发布者信息</div>
+      <div class="mb-2">昵称: <%= seller?.nickname || "未知用户" %></div>
+      <div class="mb-2">OpenID: <%= seller?.openid || seller?.open_id || "-" %></div>
+      <div class="mb-2">角色: <%= seller?.role || "user" %></div>
+      <div>状态: <%= seller?.status || "-" %></div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6">
+        <div class="card stat-card">
+          <div class="card-body">
+            <div class="text-muted small">会话数</div>
+            <div class="h2 mb-0"><%= metrics.conversationCount %></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card stat-card">
+          <div class="card-body">
+            <div class="text-muted small">消息数</div>
+            <div class="h2 mb-0"><%= metrics.messageCount %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-4 border p-4 mb-3 bg-light">
+      <div class="fw-semibold mb-2">发布策略已调整</div>
+      <div class="text-muted">
+        新帖子提交后默认直接发布，不再提供“通过审核”操作。若需要处理违规或失效内容，请使用下方的下架功能。
+      </div>
+    </div>
+
+    <div class="rounded-4 border p-4">
+      <% if (listing.status === "off_shelf" || listing.status === "removed") { %>
+        <div class="fw-semibold mb-3">重新上架</div>
+        <form method="POST" action="/admin/listings/<%= listing.id || listing._id %>/restore" class="d-grid gap-3">
+          <input type="text" name="note" class="form-control rounded-4" placeholder="可选备注，例如：人工复核后恢复展示" />
+          <button type="submit" class="btn btn-success rounded-4">重新上架</button>
+        </form>
+      <% } else { %>
+      <div class="fw-semibold mb-3">强制下架</div>
+      <form method="POST" action="/admin/listings/<%= listing.id || listing._id %>/remove" class="d-grid gap-3">
+        <textarea name="reason" class="form-control rounded-4" rows="3" placeholder="下架原因，可选"></textarea>
+        <button type="submit" class="btn btn-dark rounded-4">下架</button>
+      </form>
+      <% } %>
+    </div>
+  </div>
+</div>

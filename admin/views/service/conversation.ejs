@@ -1,0 +1,316 @@
+<style>
+  .service-chat-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) 360px;
+    gap: 20px;
+  }
+
+  .service-chat-card,
+  .service-chat-side {
+    border: 1px solid rgba(37, 35, 33, 0.08);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: 0 10px 24px rgba(34, 34, 34, 0.05);
+  }
+
+  .service-chat-card {
+    display: grid;
+    grid-template-rows: auto auto minmax(420px, 1fr) auto;
+    overflow: hidden;
+  }
+
+  .service-chat-header,
+  .service-chat-product,
+  .service-chat-composer,
+  .service-chat-side {
+    padding: 20px;
+  }
+
+  .service-chat-header,
+  .service-chat-product {
+    border-bottom: 1px solid rgba(37, 35, 33, 0.08);
+  }
+
+  .service-chat-action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .service-chat-reserved-note {
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: rgba(37, 35, 33, 0.06);
+    color: rgba(37, 35, 33, 0.66);
+    font-size: 12px;
+  }
+
+  .service-chat-messages {
+    padding: 18px 20px;
+    display: grid;
+    gap: 14px;
+    max-height: 62vh;
+    overflow-y: auto;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.6));
+  }
+
+  .service-message-group {
+    display: grid;
+    gap: 8px;
+  }
+
+  .service-message-time {
+    justify-self: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(37, 35, 33, 0.08);
+    color: rgba(37, 35, 33, 0.58);
+    font-size: 12px;
+  }
+
+  .service-message-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .service-message-row.mine {
+    justify-content: flex-end;
+  }
+
+  .service-message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: #ffe351;
+    font-weight: 700;
+  }
+
+  .service-message-row.mine .service-message-avatar {
+    background: #252321;
+    color: #fff;
+  }
+
+  .service-message-bubble {
+    max-width: min(78%, 640px);
+    padding: 14px 16px;
+    border-radius: 18px 18px 18px 8px;
+    background: #fff7db;
+    box-shadow: 0 8px 18px rgba(34, 34, 34, 0.05);
+  }
+
+  .service-message-row.mine .service-message-bubble {
+    border-radius: 18px 18px 8px 18px;
+    background: #252321;
+    color: #fff;
+  }
+
+  .service-message-meta {
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: rgba(37, 35, 33, 0.56);
+  }
+
+  .service-message-row.mine .service-message-meta {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .service-message-image {
+    display: block;
+    max-width: min(280px, 48vw);
+    border-radius: 14px;
+  }
+
+  .service-chat-composer textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  .service-side-meta {
+    display: grid;
+    gap: 14px;
+  }
+
+  .service-side-block {
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: #fffdf7;
+  }
+
+  @media (max-width: 1100px) {
+    .service-chat-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+  <div>
+    <h2 class="h4 mb-1"><%= conversation.listing_title %></h2>
+    <div class="text-muted small">
+      <%= conversation.listing_type === "wanted" ? "求购帖" : "出售帖" %>
+      路
+      <%= conversation.district_name %>
+      路
+      最后活跃 <%= new Date(conversation.last_active_at || Date.now()).toLocaleString("zh-CN") %>
+    </div>
+  </div>
+  <div class="service-chat-action-row">
+    <a class="btn btn-outline-dark rounded-4" href="/service/dashboard">返回列表</a>
+    <form method="POST" action="/service/conversations/<%= conversation.route_id %>/processed">
+      <input type="hidden" name="back_to" value="detail" />
+      <button class="btn <%= conversation.is_processed ? 'btn-outline-secondary' : 'btn-success' %> rounded-4" type="submit">
+        <%= conversation.is_processed ? "恢复处理中" : "标记已处理" %>
+      </button>
+    </form>
+    <form method="POST" action="/service/conversations/<%= conversation.route_id %>/refund">
+      <input type="hidden" name="back_to" value="detail" />
+      <button class="btn btn-outline-primary rounded-4" type="submit">退款（预留）</button>
+    </form>
+    <form method="POST" action="/service/conversations/<%= conversation.route_id %>/reject">
+      <input type="hidden" name="back_to" value="detail" />
+      <button class="btn btn-outline-danger rounded-4" type="submit">不批准（预留）</button>
+    </form>
+  </div>
+</div>
+
+<div class="service-chat-layout">
+  <section class="service-chat-card">
+    <header class="service-chat-header d-flex justify-content-between align-items-center gap-3 flex-wrap">
+      <div>
+        <div class="fw-semibold">客服对话</div>
+        <div class="small text-muted">
+          买家：<%= conversation.buyer_name %>
+          路
+          卖家：<%= conversation.seller_name %>
+        </div>
+      </div>
+      <span class="status-pill <%= conversation.is_processed ? 'closed' : 'processing' %>">
+        <%= conversation.is_processed ? "已处理" : "处理中" %>
+      </span>
+    </header>
+
+    <section class="service-chat-product d-grid gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <% if (conversation.listing_image) { %>
+          <img src="<%= conversation.listing_image %>" alt="" style="width:84px;height:84px;object-fit:cover;border-radius:18px;" />
+        <% } else { %>
+          <div class="rounded-4 bg-light d-grid place-items-center" style="width:84px;height:84px;">无图</div>
+        <% } %>
+        <div>
+          <div class="fw-semibold"><%= conversation.listing_title %></div>
+          <div class="text-muted small mb-1"><%= conversation.district_name %></div>
+          <div class="h5 mb-0">￥<%= Number(conversation.listing_price || 0).toFixed(2) %></div>
+        </div>
+      </div>
+      <div class="service-chat-reserved-note">
+        “退款”和“不批准”按钮已经预留路由，当前点击会先记录动作并提示成功，后续我们可以直接接入真实接口。
+      </div>
+    </section>
+
+    <section class="service-chat-messages" id="service-chat-messages">
+      <% if (!messages.length) { %>
+        <div class="text-center text-muted py-5">当前还没有消息，客服可以先发一条问候。</div>
+      <% } %>
+
+      <% messages.forEach((message) => { %>
+        <div class="service-message-group">
+          <div class="service-message-time"><%= new Date(message.created_at || Date.now()).toLocaleString("zh-CN") %></div>
+          <div class="service-message-row <%= message.is_service_sender ? 'mine' : '' %>">
+            <% if (!message.is_service_sender) { %>
+              <div class="service-message-avatar"><%= String(message.sender_name || "?").slice(0, 2) %></div>
+            <% } %>
+
+            <div class="service-message-bubble">
+              <div class="service-message-meta"><%= message.sender_name %></div>
+              <% if (message.is_image && message.image_url) { %>
+                <a href="<%= message.image_url %>" target="_blank" rel="noreferrer">
+                  <img class="service-message-image" src="<%= message.image_url %>" alt="聊天图片" />
+                </a>
+              <% } else { %>
+                <div><%= message.content || "（空消息）" %></div>
+              <% } %>
+            </div>
+
+            <% if (message.is_service_sender) { %>
+              <div class="service-message-avatar"><%= String(currentServiceUser.nickname || "客服").slice(0, 2) %></div>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </section>
+
+    <footer class="service-chat-composer">
+      <form method="POST" action="/service/conversations/<%= conversation.route_id %>/messages" class="d-grid gap-3">
+        <label for="service-reply" class="form-label fw-semibold mb-0">客服回复</label>
+        <textarea
+          id="service-reply"
+          name="content"
+          class="form-control rounded-4"
+          placeholder="输入要发送给买家 / 卖家的消息..."
+          required
+        ></textarea>
+        <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+          <div class="text-muted small">当前回复会直接进入这笔交易对话，用户端会在原聊天窗口看到。</div>
+          <button class="btn btn-dark rounded-4 px-4" type="submit">发送回复</button>
+        </div>
+      </form>
+    </footer>
+  </section>
+
+  <aside class="service-chat-side">
+    <div class="service-side-meta">
+      <div class="service-side-block">
+        <div class="fw-semibold mb-2">对话信息</div>
+        <div class="small text-muted">会话 ID</div>
+        <div class="mb-2"><%= conversation.id %></div>
+        <div class="small text-muted">当前状态</div>
+        <div><%= conversation.is_processed ? "已处理" : "处理中" %></div>
+      </div>
+
+      <div class="service-side-block">
+        <div class="fw-semibold mb-2">买卖双方</div>
+        <div class="mb-2">买家：<%= conversation.buyer_name %></div>
+        <div class="text-muted small mb-3"><%= conversation.buyer_openid %></div>
+        <div class="mb-2">卖家：<%= conversation.seller_name %></div>
+        <div class="text-muted small"><%= conversation.seller_openid %></div>
+      </div>
+
+      <div class="service-side-block">
+        <div class="fw-semibold mb-2">预留动作</div>
+        <div class="small text-muted mb-3">
+          如果你现在只想先把流程入口摆出来，就先用这两个按钮；等你要接真实退款或不批准逻辑时，我们直接复用这两个路由。
+        </div>
+        <div class="service-chat-action-row">
+          <form method="POST" action="/service/conversations/<%= conversation.route_id %>/refund">
+            <input type="hidden" name="back_to" value="detail" />
+            <button class="btn btn-sm btn-outline-primary rounded-4" type="submit">退款（预留）</button>
+          </form>
+          <form method="POST" action="/service/conversations/<%= conversation.route_id %>/reject">
+            <input type="hidden" name="back_to" value="detail" />
+            <button class="btn btn-sm btn-outline-danger rounded-4" type="submit">不批准（预留）</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="service-side-block">
+        <div class="fw-semibold mb-2">客服提示</div>
+        <div class="small text-muted">
+          可先确认区县、成色、面交方式，再引导双方留在站内沟通。
+          如问题已解决，记得点击“标记已处理”。
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (function () {
+    const panel = document.getElementById("service-chat-messages");
+    if (panel) {
+      panel.scrollTop = panel.scrollHeight;
+    }
+  })();
+</script>

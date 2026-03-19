@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title || "社区二手后台" %></title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      body {
+        background: #f4f1e8;
+        color: #252321;
+      }
+
+      .app-shell {
+        display: grid;
+        grid-template-columns: 240px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        padding: 28px 20px;
+        background: linear-gradient(180deg, #ffe351 0%, #f5d909 100%);
+        border-right: 1px solid rgba(34, 34, 34, 0.08);
+      }
+
+      .sidebar > .rounded-4.bg-white,
+      .sidebar > .mb-4.rounded-4,
+      .page-card,
+      .stat-card,
+      .table-responsive {
+        transition:
+          transform 180ms ease,
+          box-shadow 180ms ease,
+          border-color 180ms ease;
+        transform: translateY(0);
+      }
+
+      .sidebar,
+      .brand,
+      .nav-link,
+      .sidebar .rounded-4,
+      .page-card,
+      .page-card h1,
+      .page-card h2,
+      .page-card h3,
+      .page-card p,
+      .page-card .text-muted,
+      .page-card .small,
+      .stat-card,
+      .status-pill,
+      .type-pill,
+      .table-responsive,
+      .table-responsive table,
+      .table-responsive th,
+      .table-responsive td,
+      .table-responsive .btn,
+      .alert,
+      .pagination,
+      .pagination .page-link {
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      input,
+      textarea,
+      select {
+        user-select: text;
+        -webkit-user-select: text;
+      }
+
+      .brand {
+        margin-bottom: 28px;
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      .brand small {
+        display: block;
+        margin-top: 6px;
+        color: rgba(37, 35, 33, 0.68);
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .nav-link {
+        margin-bottom: 10px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        color: #252321;
+        font-weight: 700;
+      }
+
+      .nav-link.active,
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.78);
+        color: #252321;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .page-card {
+        border: 0;
+        border-radius: 28px;
+        box-shadow: 0 12px 32px rgba(34, 34, 34, 0.07);
+      }
+
+      .page-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 44px rgba(34, 34, 34, 0.11);
+      }
+
+      .stat-card {
+        border: 0;
+        border-radius: 24px;
+        background: #fffdf7;
+        box-shadow: 0 10px 24px rgba(34, 34, 34, 0.06);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 36px rgba(34, 34, 34, 0.1);
+      }
+
+      .sidebar > .rounded-4.bg-white,
+      .sidebar > .mb-4.rounded-4 {
+        box-shadow: 0 10px 24px rgba(34, 34, 34, 0.08);
+      }
+
+      .sidebar > .rounded-4.bg-white:hover,
+      .sidebar > .mb-4.rounded-4:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 34px rgba(34, 34, 34, 0.12);
+      }
+
+      .table-responsive {
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: 0 10px 24px rgba(34, 34, 34, 0.05);
+        overflow: hidden;
+      }
+
+      .table-responsive:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 38px rgba(34, 34, 34, 0.09);
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .status-pill.pending_review,
+      .status-pill.new {
+        background: #fff1bf;
+        color: #7c5d00;
+      }
+
+      .status-pill.approved,
+      .status-pill.active,
+      .status-pill.closed {
+        background: #dbf5df;
+        color: #18743a;
+      }
+
+      .status-pill.processing {
+        background: #d8e8ff;
+        color: #2359a6;
+      }
+
+      .status-pill.rejected,
+      .status-pill.off_shelf,
+      .status-pill.removed,
+      .status-pill.disabled {
+        background: #ffe0db;
+        color: #b63f24;
+      }
+
+      .type-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #252321;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .type-pill.wanted {
+        background: #ff6f30;
+      }
+
+      .table thead th {
+        border-bottom-width: 1px;
+        color: rgba(37, 35, 33, 0.72);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .table td,
+      .table th {
+        vertical-align: middle;
+      }
+
+      .table tbody tr {
+        transition: background-color 160ms ease, transform 160ms ease;
+      }
+
+      .table tbody tr:hover {
+        background: rgba(255, 227, 81, 0.12);
+      }
+
+      @media (max-width: 991px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          border-right: 0;
+          border-bottom: 1px solid rgba(34, 34, 34, 0.08);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <% if (currentUser) { %>
+        <aside class="sidebar">
+          <div class="brand">
+            社区二手平台
+            <small>
+              <%= currentUser.role === "customer_service" ? "客服 Web" : "管理后台" %>
+            </small>
+          </div>
+
+          <div class="mb-4 rounded-4 bg-white bg-opacity-75 p-3">
+            <div class="fw-bold"><%= currentUser.nickname %></div>
+            <div class="small text-muted mt-1">
+              角色: <%= currentUser.role === "customer_service" ? "客服" : "管理员" %>
+            </div>
+          </div>
+
+          <nav class="nav flex-column">
+            <% if (currentUser.role === "admin") { %>
+              <a
+                class="nav-link <%= currentPath.startsWith('/admin/listings') ? 'active' : '' %>"
+                href="/admin/listings"
+              >
+                商品与求购
+              </a>
+              <a
+                class="nav-link <%= currentPath.startsWith('/admin/users') ? 'active' : '' %>"
+                href="/admin/users"
+              >
+                用户与客服
+              </a>
+              <a
+                class="nav-link <%= currentPath.startsWith('/admin/feedback') ? 'active' : '' %>"
+                href="/admin/feedback"
+              >
+                反馈与举报
+              </a>
+              <a
+                class="nav-link <%= currentPath.startsWith('/service') ? 'active' : '' %>"
+                href="/service/dashboard"
+              >
+                客服工作台
+              </a>
+            <% } else { %>
+              <a
+                class="nav-link <%= currentPath.startsWith('/service/dashboard') ? 'active' : '' %>"
+                href="/service/dashboard"
+              >
+                客服工作台
+              </a>
+            <% } %>
+            <a class="nav-link" href="/login?switch=1">切换账号</a>
+            <a class="nav-link" href="/logout">退出登录</a>
+          </nav>
+        </aside>
+      <% } %>
+
+      <main class="content">
+        <% if (success && success.length) { %>
+          <div class="alert alert-success rounded-4 border-0"><%= success[0] %></div>
+        <% } %>
+
+        <% if (error && error.length) { %>
+          <div class="alert alert-danger rounded-4 border-0"><%= error[0] %></div>
+        <% } %>
+
+        <div class="card page-card">
+          <div class="card-body p-4 p-lg-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+              <div>
+                <h1 class="h3 mb-1"><%= title || "社区二手后台" %></h1>
+                <div class="text-muted small">
+                  基于地级市与区县的二手交易、求购、聊天与客服运营骨架
+                </div>
+              </div>
+            </div>
+            <%- body %>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function handleAdminPasswordReset(form) {
+        const userName = form?.dataset?.userName || "该用户";
+        const password = window.prompt("请输入 " + userName + " 的新密码（至少 6 位）", "");
+
+        if (password === null) {
+          return false;
+        }
+
+        const normalizedPassword = String(password).trim();
+        if (normalizedPassword.length < 6) {
+          window.alert("新密码长度不能少于 6 位。");
+          return false;
+        }
+
+        const confirmPassword = window.prompt("请再次输入新密码以确认", "");
+        if (confirmPassword === null) {
+          return false;
+        }
+
+        if (normalizedPassword !== String(confirmPassword).trim()) {
+          window.alert("两次输入的新密码不一致。");
+          return false;
+        }
+
+        const hiddenInput = form.querySelector('input[name="new_password"]');
+        if (!hiddenInput) {
+          window.alert("页面缺少密码提交字段，请刷新后重试。");
+          return false;
+        }
+
+        hiddenInput.value = normalizedPassword;
+        return true;
+      }
+    </script>
+  </body>
+</html>

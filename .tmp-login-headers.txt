@@ -1,0 +1,11 @@
+HTTP/1.1 302 Found
+X-Powered-By: Express
+Location: /service/dashboard
+Vary: Accept
+Content-Type: text/plain; charset=utf-8
+Content-Length: 40
+Set-Cookie: connect.sid=s%3Ai2j4xDbUTkaAOxx6dWiJzxBRTAD3wReG.mU9m88lTfnBX7Ykb0LIES%2Bnz1Anxuok9%2FmnfpHcuVH8; Path=/; Expires=Tue, 17 Mar 2026 17:27:16 GMT; HttpOnly
+Date: Mon, 16 Mar 2026 17:27:16 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+

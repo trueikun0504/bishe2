@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>本地闲置</title>
+    <link rel="stylesheet" href="/user-web/styles.css" />
+  </head>
+  <body>
+    <div
+      id="boot-status"
+      style="margin:24px;padding:16px;border:1px solid #e7debf;border-radius:16px;background:#fffbea;color:#444;font:14px/1.6 Arial,sans-serif;"
+    >
+      正在加载页面...
+    </div>
+    <div id="app"></div>
+    <script>
+      (function () {
+        var status = document.getElementById("boot-status");
+        var ready = false;
+
+        function setStatus(message) {
+          if (status) {
+            status.textContent = message;
+          }
+        }
+
+        window.__LOCAL_TRADER_APP_READY__ = function () {
+          ready = true;
+          if (status) {
+            status.remove();
+          }
+        };
+
+        window.addEventListener("error", function (event) {
+          setStatus("启动异常：" + (event.message || "未知错误"));
+        });
+
+        window.addEventListener("unhandledrejection", function (event) {
+          var reason = event.reason;
+          var message =
+            reason && typeof reason === "object" && "message" in reason
+              ? reason.message
+              : String(reason || "未知 Promise 异常");
+          setStatus("异步异常：" + message);
+        });
+
+        window.setTimeout(function () {
+          if (!ready) {
+            setStatus("页面未成功启动，请强制刷新后重试。");
+          }
+        }, 4000);
+      })();
+    </script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+    <script src="/user-web/app.js"></script>
+  </body>
+</html>

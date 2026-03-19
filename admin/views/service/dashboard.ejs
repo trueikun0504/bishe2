@@ -1,0 +1,172 @@
+<form class="row g-3 mb-4" method="GET" action="/service/dashboard">
+  <div class="col-md-3">
+    <label class="form-label">处理状态</label>
+    <select name="service_status" class="form-select rounded-4">
+      <% serviceStatusOptions.forEach((option) => { %>
+        <option value="<%= option.value %>" <%= currentServiceStatus === option.value ? "selected" : "" %>>
+          <%= option.label %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">商品状态</label>
+    <select name="listing_status" class="form-select rounded-4">
+      <% listingStatusOptions.forEach((option) => { %>
+        <option value="<%= option.value %>" <%= currentListingStatus === option.value ? "selected" : "" %>>
+          <%= option.label %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">关键词</label>
+    <input
+      name="keyword"
+      value="<%= keyword || '' %>"
+      class="form-control rounded-4"
+      placeholder="商品 / 买家 / 卖家 / openid"
+    />
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-dark rounded-4 w-100" type="submit">筛选</button>
+  </div>
+</form>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">对话总数</div>
+        <div class="display-6 fw-bold"><%= stats.conversationCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">消息总数</div>
+        <div class="display-6 fw-bold"><%= stats.messageCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">处理中对话</div>
+        <div class="display-6 fw-bold"><%= stats.processingConversationCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">待处理反馈</div>
+        <div class="display-6 fw-bold"><%= stats.pendingFeedbackCount %></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="rounded-4 border p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-3">
+        <div>
+          <h2 class="h5 mb-1">进行中的交易对话</h2>
+          <div class="text-muted small">展示商品信息、买卖双方和最后一条消息预览</div>
+        </div>
+        <div class="text-muted small">共 <%= recentConversations.length %> 条</div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>买家 / 卖家</th>
+              <th>最后消息</th>
+              <th>状态</th>
+              <th>更新时间</th>
+              <th class="text-end">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!recentConversations.length) { %>
+              <tr>
+                <td colspan="6" class="py-5 text-center text-muted">当前还没有交易对话。</td>
+              </tr>
+            <% } %>
+
+            <% recentConversations.forEach((conversation) => { %>
+              <tr>
+                <td style="min-width: 220px;">
+                  <div class="fw-semibold"><%= conversation.listing_title %></div>
+                  <div class="small text-muted">
+                    <%= conversation.district_name %>
+                    ·
+                    <%= conversation.listing_type === "wanted" ? "求购帖" : "出售帖" %>
+                  </div>
+                </td>
+                <td style="min-width: 190px;">
+                  <div>买家：<%= conversation.buyer_name %></div>
+                  <div class="small text-muted">卖家：<%= conversation.seller_name %></div>
+                </td>
+                <td style="min-width: 220px;">
+                  <div class="small"><%= conversation.last_message_preview || "-" %></div>
+                </td>
+                <td>
+                  <span class="status-pill <%= conversation.is_processed ? 'closed' : 'processing' %>">
+                    <%= conversation.is_processed ? "已处理" : "处理中" %>
+                  </span>
+                </td>
+                <td class="small text-muted"><%= conversation.last_active_label %></td>
+                <td class="text-end">
+                  <div class="d-flex justify-content-end gap-2 flex-wrap">
+                    <a class="btn btn-sm btn-dark rounded-4" href="/service/conversations/<%= conversation.route_id %>">进入对话</a>
+                    <form method="POST" action="/service/conversations/<%= conversation.route_id %>/processed">
+                      <button class="btn btn-sm <%= conversation.is_processed ? 'btn-outline-secondary' : 'btn-outline-success' %> rounded-4" type="submit">
+                        <%= conversation.is_processed ? "恢复处理中" : "标记已处理" %>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="rounded-4 border p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">待处理反馈</h2>
+        <div class="text-muted small">客服可直接进入处理</div>
+      </div>
+
+      <div class="d-grid gap-3">
+        <% if (!pendingFeedbacks.length) { %>
+          <div class="rounded-4 bg-light p-4 text-center text-muted">当前没有待处理反馈。</div>
+        <% } %>
+
+        <% pendingFeedbacks.forEach((feedback) => { %>
+          <div class="rounded-4 bg-light p-3">
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+              <div class="fw-semibold"><%= feedback.title || "用户反馈" %></div>
+              <span class="status-pill <%= feedback.status || 'new' %>"><%= feedback.status || "new" %></span>
+            </div>
+            <div class="small text-muted mb-2">
+              <%= feedback.user?.nickname || feedback.openid || feedback.user_id || "-" %>
+              ·
+              <%= new Date(feedback.created_at).toLocaleString("zh-CN") %>
+            </div>
+            <div class="small mb-3"><%= String(feedback.content || feedback.description || "").slice(0, 80) %></div>
+            <a class="btn btn-sm btn-dark rounded-4" href="/service/feedback/<%= feedback.id || feedback._id %>">进入处理</a>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+node_modules
+admin/node_modules
+uniapp-project/node_modules
+uniapp-project/dist
+.git
+.claude
+.tmp-edge
+.tmp-ref
+*.log
+admin/run-web.out.log
+admin/run-web.err.log

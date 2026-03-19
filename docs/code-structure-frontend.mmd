@@ -1,0 +1,123 @@
+%% Solid arrows = import / serve / call
+%% Dashed arrows = reference / archive
+flowchart TB
+  repo["g:\\bishe2\nMonorepo Root / Monorepo 根目录"]
+
+  subgraph UNIAPP["uniapp-project/\nFrontend app / 前端应用\nVue 3 + UniApp + Vite + wx.cloud"]
+    app_main["src/main.js\nApp bootstrap / 应用启动"]
+    app_vue["src/App.vue\nLaunch bootstrap / 启动初始化\nmock seed + CloudBase init"]
+    pages_json["src/pages.json\nRoutes + tabBar / 路由与底部导航"]
+    manifest_json["src/manifest.json\nPlatform config / 平台配置"]
+    uni_scss["src/uni.scss\nGlobal theme tokens / 全局主题变量"]
+
+    subgraph UNI_PAGES["src/pages/\nFeature pages / 功能页面"]
+      page_index["index/index.vue\nHome feed / 首页信息流\nDistrict filter / 区域筛选"]
+      page_categories["categories/index.vue\nCategory browsing / 分类浏览"]
+      page_listing["listing/listing.vue\nListing detail / 帖子详情\nChat entry / 发起聊天"]
+      page_publish["publish/publish.vue\nPublish form / 发布表单\nImage upload / 图片上传"]
+      page_conversations["conversations/*.vue\nConversation list + detail\n会话列表 + 详情"]
+      page_profile["profile/index.vue\nLogin + my listings\n登录 + 我的帖子"]
+      page_favorites["favorites/index.vue\nSaved listings / 收藏列表"]
+      page_login["login/index.vue\nWeChat auth + mock login\n微信授权 + Mock 登录"]
+    end
+
+    subgraph UNI_COMPONENTS["src/components/\nShared UI / 公共组件"]
+      c_search["TopSearchBar.vue\nSearch header / 搜索头部"]
+      c_district["DistrictSelector.vue\nDistrict picker / 区县选择器"]
+      c_empty["EmptyState.vue\nEmpty state / 空状态"]
+      c_product["ProductCard.vue\nListing card / 帖子卡片"]
+      c_bottom["BottomNav.vue\nTab navigation / 底部导航"]
+    end
+
+    subgraph UNI_SERVICES["src/services/\nData access / 数据访问层"]
+      s_api["api.js\nHTTP wrapper + CloudBase fallback\n请求封装 + CloudBase 回退"]
+      s_auth["auth.js\nLogin / token / route guard\n登录、令牌、路由守卫"]
+      s_mock["mock-data.js\nLocal seed DB / 本地模拟数据"]
+    end
+
+    subgraph UNI_UTILS["src/utils/\nHelpers / 工具层"]
+      u_state["app-state.js\nReactive state + storage\n响应式状态 + 本地存储"]
+      u_cloud["cloudbase.js\nwx.cloud init + upload\nCloudBase 初始化 + 上传"]
+      u_const["constants.js\nAPI URL / storage keys\nAPI 地址 + 存储键"]
+      u_format["format.js\nprice / time / image helpers\n价格、时间、图片工具"]
+    end
+
+    cloud_fn["cloudfunctions/weixinAuthLogin/\nCloudBase function / 云函数登录"]
+    sync_fn["scripts/sync-cloudfunctions.js\nSync cloudfunctions / 同步云函数"]
+  end
+
+  repo --> app_main
+  repo --> pages_json
+  repo --> manifest_json
+  repo --> uni_scss
+  repo --> cloud_fn
+  repo --> sync_fn
+
+  app_main --> app_vue
+  app_vue --> s_mock
+  app_vue --> u_cloud
+
+  page_index --> c_search
+  page_index --> c_district
+  page_index --> c_empty
+  page_index --> s_api
+  page_index --> u_state
+  page_index --> u_const
+  page_index --> u_format
+
+  page_categories --> c_product
+  page_categories --> c_empty
+  page_categories --> s_api
+  page_categories --> u_state
+
+  page_listing --> s_api
+  page_listing --> s_auth
+  page_listing --> u_state
+  page_listing --> u_const
+  page_listing --> u_format
+
+  page_publish --> c_district
+  page_publish --> c_empty
+  page_publish --> s_api
+  page_publish --> s_auth
+  page_publish --> u_state
+  page_publish --> u_const
+
+  page_conversations --> c_empty
+  page_conversations --> s_api
+  page_conversations --> s_auth
+  page_conversations --> u_state
+  page_conversations --> u_const
+  page_conversations --> u_format
+
+  page_profile --> s_api
+  page_profile --> s_auth
+
+  page_favorites --> c_product
+  page_favorites --> c_empty
+  page_favorites --> s_api
+  page_favorites --> s_auth
+
+  page_login --> s_auth
+  page_login --> u_state
+  page_login --> u_const
+
+  c_product --> u_format
+  c_search --> u_const
+
+  s_api --> u_state
+  s_api --> u_cloud
+  s_api --> u_const
+  s_api --> s_mock
+
+  s_auth --> s_api
+  s_auth --> u_state
+  s_auth --> u_const
+
+  s_mock --> u_const
+  s_mock --> u_format
+
+  u_cloud --> u_const
+
+  sync_fn --> cloud_fn
+

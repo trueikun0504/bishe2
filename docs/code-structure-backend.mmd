@@ -1,0 +1,74 @@
+%% Solid arrows = import / serve / call
+%% Dashed arrows = reference / archive
+flowchart TB
+  repo["g:\\bishe2\nMonorepo Root / Monorepo 根目录"]
+
+  subgraph SHARED["Shared / 公共层"]
+    cloudbase_root["cloudbase.js\nCloudBase init / CloudBase 初始化 (Node SDK)"]
+    initdb["init-db.js\nBootstrap collections / 集合初始化\nnormalizeDoc / 文档规范化"]
+    district_seed["data/china-districts.generated.js\nDistrict seed snapshot / 区县种子数据"]
+  end
+
+  subgraph ADMIN["admin/\nBackend service / 后端服务\nExpress + EJS + ws + CloudBase"]
+    server_js["server.js\nEntry point / 入口文件\nExpress + session + flash + morgan + method-override + EJS layouts"]
+    route_web_auth["routes/web-auth.js\nWeb auth API / Web 登录接口\nJWT + account/password"]
+    route_web_api["routes/web-api.js\nWeb user API / 用户端接口\nJWT + multer + SMS + chat/listings"]
+    route_mp_auth["routes/mp-auth.js\nMini-program auth API / 小程序授权接口\nWeChat jscode2session + JWT"]
+    route_admin["routes/admin.js\nAdmin pages / 管理后台页面\nlisting / user / feedback operations"]
+    route_service["routes/service.js\nCustomer-service dashboard / 客服工作台"]
+    websocket_js["websocket.js\nws hub / WebSocket 中枢\nJWT auth + conversation push"]
+    lib_passwords["lib/passwords.js\nPBKDF2 password hashing / 密码哈希"]
+    lib_phones["lib/phones.js\nPhone normalize / validate / mask\n手机号规范化 / 校验 / 脱敏"]
+    lib_sms["lib/enterprise-sms.js\nEnterprise SMS gateway / 企业短信网关"]
+    views_dir["views/\nEJS templates / EJS 模板"]
+    public_userweb["public/user-web/\nCurrent Web user app / 当前 Web 用户端"]
+    public_uploads["public/uploads/\nUploaded images / 上传图片"]
+  end
+
+  repo --> cloudbase_root
+  repo --> initdb
+  repo --> district_seed
+  repo --> server_js
+
+  server_js --> route_web_auth
+  server_js --> route_web_api
+  server_js --> route_mp_auth
+  server_js --> route_admin
+  server_js --> route_service
+  server_js --> websocket_js
+  server_js --> views_dir
+  server_js --> public_userweb
+  server_js --> public_uploads
+  server_js --> cloudbase_root
+  server_js --> initdb
+
+  route_web_auth --> cloudbase_root
+  route_web_auth --> initdb
+  route_web_auth --> lib_passwords
+  route_web_auth --> lib_phones
+
+  route_web_api --> cloudbase_root
+  route_web_api --> initdb
+  route_web_api --> district_seed
+  route_web_api --> websocket_js
+  route_web_api --> lib_passwords
+  route_web_api --> lib_phones
+  route_web_api --> lib_sms
+  route_web_api --> public_uploads
+
+  route_mp_auth --> cloudbase_root
+  route_mp_auth --> initdb
+
+  route_admin --> cloudbase_root
+  route_admin --> initdb
+  route_admin --> lib_passwords
+  route_admin --> views_dir
+
+  route_service --> cloudbase_root
+  route_service --> initdb
+  route_service --> websocket_js
+  route_service --> views_dir
+
+  public_userweb --> route_web_auth
+  public_userweb --> route_web_api
+
